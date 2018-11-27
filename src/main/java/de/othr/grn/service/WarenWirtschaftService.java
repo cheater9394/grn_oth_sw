@@ -27,6 +27,8 @@ public class WarenWirtschaftService implements WarenWirtschaftServiceIF{
 
         entityManager.persist(neu);
 
+        //TODO: Versand überweißen (lassen)
+
         return neu;
     }
 
@@ -41,7 +43,7 @@ public class WarenWirtschaftService implements WarenWirtschaftServiceIF{
     @Override
     @Transactional
     public void klebebandBestellen() {
-
+        //TODO: Schnittstelle von BBestellungen importieren
     }
 
     @Override
@@ -52,6 +54,8 @@ public class WarenWirtschaftService implements WarenWirtschaftServiceIF{
                 Lieferung.class);
                 query.setParameter("adresse",adresse);
         return query.getResultList();
+
+        //TODO: testing
     }
 
     @Transactional
