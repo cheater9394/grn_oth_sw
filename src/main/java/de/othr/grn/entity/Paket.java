@@ -13,14 +13,14 @@ public class Paket extends Lieferung{
      * @param inhalt Bezeichner des Paketinhalts
      * @param gewicht Gewicht des Pakets in Gramm
      */
-    public Paket(String inhalt, Adresse adresse, int gewicht) {
-        super(adresse, gewicht);
+    public Paket(String inhalt, Adresse adresse, int gewicht, Versandart versandart) {
+        super(adresse, gewicht, versandart);
         this.inhalt = inhalt;
     }
 
     @Override
     public String toString() {
-        return "Paket{ Inhalt: " + inhalt + "\'" +
+        return "Paket {Inhalt: " + inhalt + ",\'" +
         super.toString() + "}";
     }
 }

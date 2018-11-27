@@ -35,6 +35,6 @@ public class Lagergut extends GeneratedIdEntity{
 
     @Override
     public String toString() {
-        return "Lagergut: {id:" + id + " ware: " + ware + " gewicht: " + gewicht + "g}";
+        return "Lagergut: { ID: " + id + ", Ware: " + ware + ", Gewicht: " + gewicht + "g}";
     }
 }

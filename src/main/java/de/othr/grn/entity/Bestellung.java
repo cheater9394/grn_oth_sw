@@ -16,8 +16,8 @@ public class Bestellung extends Lieferung {
      * @param lagergut Referenz auf Inhaltsitem
      * @param anzahl Anzahl der Items
      */
-    public Bestellung(Lagergut lagergut, Adresse adresse, int anzahl) {
-        super(adresse, lagergut.getGewicht()*anzahl);
+    public Bestellung(Lagergut lagergut, Adresse adresse, int anzahl, Versandart versandart) {
+        super(adresse, lagergut.getGewicht()*anzahl, versandart);
         this.lagergut = lagergut;
         this.anzahl = anzahl;
     }
@@ -32,7 +32,7 @@ public class Bestellung extends Lieferung {
 
     @Override
     public String toString() {
-        return "Bestellung{" + lagergut.toString() + " x" + anzahl + "\'" +
+        return "Bestellung { " + lagergut.toString() + " x" + anzahl + ",\'" +
                 super.toString() + "}";
     }
 }

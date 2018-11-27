@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.List;
 
 @WebServlet(name = "PaketServlet",urlPatterns = "/Servlet")
 public class PaketServlet extends HttpServlet {
@@ -31,18 +32,23 @@ public class PaketServlet extends HttpServlet {
         out.println("<body>");
         out.println("<h1>Paket-Servlet-Test</h1>");
 
-        Adresse adresse = new Adresse("Weggasse","27+e^(3.7453)","Dorfstadt");
-        Lieferung p = new Paket("Tontauben", adresse,312);
+        Adresse adresse = new Adresse("Weggasse 9","54231","Dorfstadt");
+        Lieferung p = new Paket("Tontauben", adresse,312, Versandart.standart);
         p=ps.aufgeben(p);
         printObject(out, p);
         p=ps.empfangen(p);
         printObject(out, p);
 
-        Lieferung p2 = new Bestellung(new Lagergut("Tontauben", 213), adresse, 7);
+        Lieferung p2 = new Bestellung(new Lagergut("Tontauben", 213), adresse, 7, Versandart.express);
         p2=ps.aufgeben(p2);
         printObject(out, p2);
         p2=ps.empfangen(p2);
         printObject(out, p2);
+
+        List<Lieferung> lieferungen = ps.lieferungenAnzeigen(adresse);
+        for(Lieferung l: lieferungen){
+            printObject(out, l);
+        }
 
         out.println("</body>");
         out.println("</html>");

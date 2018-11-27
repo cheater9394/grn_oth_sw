@@ -3,7 +3,6 @@ package de.othr.grn.entity;
 import de.othr.grn.entity.util.GeneratedIdEntity;
 
 import javax.persistence.Entity;
-import javax.persistence.ManyToOne;
 import java.util.Objects;
 
 @Entity
@@ -11,17 +10,19 @@ public abstract class Lieferung extends GeneratedIdEntity {
 
     private Adresse adresse;
     private int gewicht;
-    private boolean zugestellt;
+    private LieferStatus lieferStatus;
+    private Versandart versandart;
 
     public Lieferung(){}
 
     /**
      * @param gewicht Gewicht des Pakets in Gramm
      */
-    public Lieferung(Adresse adresse, int gewicht) {
+    public Lieferung(Adresse adresse, int gewicht, Versandart versandart) {
         this.adresse = adresse;
         this.gewicht = gewicht;
-        this.zugestellt = false;
+        this.lieferStatus = LieferStatus.s1;
+        this.versandart = versandart;
     }
 
     @Override
@@ -38,33 +39,36 @@ public abstract class Lieferung extends GeneratedIdEntity {
     }
 
     public long versandBerechnen(){
-        if (gewicht <= 20) return 70;
-        else if (gewicht <= 50) return 85;
-        else if (gewicht <= 500) return 145;
-        else if (gewicht <= 1000) return 260;
-        else if (gewicht <= 2000) return 480;
-        else return 2090;
+        int versand;
+        if (gewicht <= 20) versand=70;
+        else if (gewicht <= 50) versand=85;
+        else if (gewicht <= 500) versand=145;
+        else if (gewicht <= 1000) versand=260;
+        else if (gewicht <= 2000) versand=480;
+        else versand=2090;
+
+        return (long) (versand*versandart.getSpeedfactor());
     }
 
     public long getLieferNr() {
         return id;
     }
 
-    public boolean isZugestellt() {
-        return zugestellt;
+    public LieferStatus getLieferStatus() {
+        return lieferStatus;
     }
 
-    public void setZugestellt(boolean zugestellt) {
-        this.zugestellt = zugestellt;
+    public void setLieferStatus(LieferStatus lieferStatus) {
+        this.lieferStatus = lieferStatus;
     }
 
     @Override
     public String toString() {
-        return "Lieferung{" +
-                "Id=" + id + "\'" +
-                adresse.toString() + "\'" +
-                "Gewicht : " + gewicht + "g\'" +
-                "Lieferung " + (zugestellt?"zugestellt":"unterwegs") +
+        return "Lieferung {" +
+                "ID: " + id + ", " +
+                adresse.toString() +
+                ", Gewicht: " + gewicht + "g, " +
+                "Lieferstatus: " + lieferStatus +
                 '}';
     }
 }

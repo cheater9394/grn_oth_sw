@@ -36,7 +36,7 @@ public class WarenWirtschaftService implements WarenWirtschaftServiceIF{
     @Transactional
     public Lieferung empfangen(Lieferung versandt){
         Lieferung temp = entityManager.find(Lieferung.class, versandt.getLieferNr());
-        temp.setZugestellt(true);
+        temp.setLieferStatus(LieferStatus.s6);
         return temp;
     }
 
