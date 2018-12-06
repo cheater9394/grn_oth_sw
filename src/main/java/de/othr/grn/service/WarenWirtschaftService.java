@@ -3,6 +3,10 @@ package de.othr.grn.service;
 import de.othr.grn.entity.*;
 
 import javax.enterprise.context.RequestScoped;
+import javax.jws.WebMethod;
+import javax.jws.WebParam;
+import javax.jws.WebService;
+import javax.naming.Name;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
@@ -11,14 +15,18 @@ import javax.transaction.Transactional;
 import java.util.List;
 
 @RequestScoped
+@WebService
 public class WarenWirtschaftService implements WarenWirtschaftServiceIF{
+
+    //Zugang: http://localhost:8080/grothDHL-0.1/WarenWirtschaftService?wsdl
 
     @PersistenceContext(unitName = "grPU")
     private EntityManager entityManager;
 
     @Override
     @Transactional
-    public Lieferung aufgeben(Lieferung neu){
+    @WebMethod
+    public Lieferung aufgeben(@WebParam(name = "Lieferung") Lieferung neu){
 
         if (neu.getClass() == Bestellung.class){
             Bestellung bestellung = (Bestellung) neu;
@@ -54,8 +62,6 @@ public class WarenWirtschaftService implements WarenWirtschaftServiceIF{
                 Lieferung.class);
                 query.setParameter("adresse",adresse);
         return query.getResultList();
-
-        //TODO: testing
     }
 
     @Transactional
@@ -67,16 +73,16 @@ public class WarenWirtschaftService implements WarenWirtschaftServiceIF{
         return gefunden;
     }
 
-    @Transactional
-    private Lagergut createLagergut(Lagergut lagergut){
-        try{
-            TypedQuery<Lagergut> query = entityManager.createQuery(
-                    "SELECT s FROM Lagergut AS s WHERE s.ware = :ware",Lagergut.class);
-            query.setParameter("ware",lagergut.getWare());
-            return query.getSingleResult();
-        }catch(NoResultException e) {
-            entityManager.persist(lagergut);
-            return lagergut;
+        @Transactional
+        private Lagergut createLagergut(Lagergut lagergut){
+            try{
+                TypedQuery<Lagergut> query = entityManager.createQuery(
+                        "SELECT s FROM Lagergut AS s WHERE s.ware = :ware",Lagergut.class);
+                query.setParameter("ware",lagergut.getWare());
+                return query.getSingleResult();
+            }catch(NoResultException e) {
+                entityManager.persist(lagergut);
+                return lagergut;
         }
     }
 
