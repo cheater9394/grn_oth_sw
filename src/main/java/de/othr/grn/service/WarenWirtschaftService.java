@@ -26,7 +26,7 @@ public class WarenWirtschaftService implements WarenWirtschaftServiceIF{
     @Override
     @Transactional
     @WebMethod
-    public Lieferung aufgeben(@WebParam(name = "Lieferung") Lieferung neu){
+    public Lieferung aufgeben(@WebParam(name = "Lieferung") Lieferung neu,@WebParam(name = "Kontonummer") long kontoNr){
 
         if (neu.getClass() == Bestellung.class){
             Bestellung bestellung = (Bestellung) neu;
@@ -73,16 +73,16 @@ public class WarenWirtschaftService implements WarenWirtschaftServiceIF{
         return gefunden;
     }
 
-        @Transactional
-        private Lagergut createLagergut(Lagergut lagergut){
-            try{
-                TypedQuery<Lagergut> query = entityManager.createQuery(
-                        "SELECT s FROM Lagergut AS s WHERE s.ware = :ware",Lagergut.class);
-                query.setParameter("ware",lagergut.getWare());
-                return query.getSingleResult();
-            }catch(NoResultException e) {
-                entityManager.persist(lagergut);
-                return lagergut;
+    @Transactional
+    private Lagergut createLagergut(Lagergut lagergut){
+        try{
+            TypedQuery<Lagergut> query = entityManager.createQuery(
+                    "SELECT s FROM Lagergut AS s WHERE s.ware = :ware",Lagergut.class);
+            query.setParameter("ware",lagergut.getWare());
+            return query.getSingleResult();
+        }catch(NoResultException e) {
+            entityManager.persist(lagergut);
+            return lagergut;
         }
     }
 

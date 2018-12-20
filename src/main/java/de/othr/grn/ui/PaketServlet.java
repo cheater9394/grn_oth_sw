@@ -34,13 +34,13 @@ public class PaketServlet extends HttpServlet {
 
         Adresse adresse = new Adresse("Weggasse 9","54231","Dorfstadt");
         Lieferung p = new Paket("Tontauben", adresse,312, Versandart.standart);
-        p=ps.aufgeben(p);
+        p=ps.aufgeben(p,1);
         printObject(out, p);
         p=ps.empfangen(p);
         printObject(out, p);
 
         Lieferung p2 = new Bestellung(new Lagergut("Tontauben", 213), adresse, 7, Versandart.express);
-        p2=ps.aufgeben(p2);
+        p2=ps.aufgeben(p2,1);
         printObject(out, p2);
         p2=ps.empfangen(p2);
         printObject(out, p2);

@@ -7,7 +7,10 @@ import java.util.List;
 
 public interface WarenWirtschaftServiceIF {
 
-    Lieferung aufgeben(Lieferung neu);
+    /**
+     * @param kontoNr Kontonummer des Versandbezahlers
+     */
+    Lieferung aufgeben(Lieferung neu, long kontoNr);
     Lieferung empfangen(Lieferung versandt);
     void klebebandBestellen();
     List<Lieferung> lieferungenAnzeigen(Adresse adresse);
