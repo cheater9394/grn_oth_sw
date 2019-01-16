@@ -78,7 +78,7 @@ public class WarenWirtschaftService implements WarenWirtschaftServiceIF{
     public Lieferung findeLieferung(long paketNr) {
         Lieferung gefunden = entityManager.find(Lieferung.class, paketNr);
 
-        System.out.println("GEFUNDEN" + gefunden);
+        System.out.println("GEFUNDEN " + gefunden);
 
         return gefunden;
     }

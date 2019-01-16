@@ -18,6 +18,14 @@ public class Paket extends Lieferung{
         this.inhalt = inhalt;
     }
 
+    public String getInhalt() {
+        return inhalt;
+    }
+
+    public void setInhalt(String inhalt) {
+        this.inhalt = inhalt;
+    }
+
     @Override
     public String toString() {
         return "Paket {Inhalt: " + inhalt + ",\'" +

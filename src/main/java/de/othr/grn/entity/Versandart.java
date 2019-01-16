@@ -1,6 +1,7 @@
 package de.othr.grn.entity;
 
 import de.othr.grn.entity.util.StringIdEntity;
+
 import javax.persistence.Entity;
 import javax.persistence.NamedQuery;
 
@@ -10,9 +11,6 @@ import javax.persistence.NamedQuery;
         query="SELECT s FROM Versandart AS s"
 )
 public class Versandart extends StringIdEntity {
-//    standart(1.0f, "Standart"),
-//    express(1.5f, "Express"),
-//    overnight(2.0f, "Overnight");
 
     private String name;
     private float speedfactor;

@@ -22,4 +22,8 @@ public class VersandartService {
         TypedQuery<Versandart> query = entityManager.createQuery("SELECT s FROM Versandart AS s", Versandart.class);
         return query.getResultList();
     }
+
+    public Versandart findVersandart(String versandId){
+        return entityManager.find(Versandart.class,versandId);
+    }
 }

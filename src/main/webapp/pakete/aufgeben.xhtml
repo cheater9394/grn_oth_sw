@@ -12,18 +12,22 @@
         <h:form>
             <h:panelGrid columns="2">
                 <h:outputText value="Inhalt:"/>
-                <h:inputText value="#{PaketModel.inhalt}"/>
+                <h:inputText value="#{paketModel.tmpPaket.inhalt}"/>
                 <h:outputText value="Gewicht:"/>
-                <h:inputText value="#{PaketModel.gewicht}"/>
+                <h:inputText value="#{paketModel.tmpPaket.gewicht}"/>
                 <h:outputText value="Versandart:"/>
-                <h:selectOneMenu value="#{PaketModel.versandart}">
-
+                <h:selectOneMenu value="#{paketModel.tmpPaket.versandart}">
+                    <f:converter binding="#{paketModel.versandartConverter}"/>
+                    <f:selectItems value="#{paketModel.versandarten}"/>
                 </h:selectOneMenu>
+                <h:outputText value="Straße:"/>
+                <h:inputText value="#{paketModel.tmpAdresse.strasse}"/>
+                <h:outputText value="PLZ:"/>
+                <h:inputText value="#{paketModel.tmpAdresse.plz}"/>
+                <h:outputText value="Ort:"/>
+                <h:inputText value="#{paketModel.tmpAdresse.ort}"/>
             </h:panelGrid>
-            Counter: <h:outputText value="#{testModel.counter}"/>
-            Text: <h:outputLabel value="#{testModel.text}"/><br/>
-            Eingabe: <h:inputText value="#{testModel.text}"/>
-            <h:commandButton value="Bitte kicke mich!" action="#{testModel.aendere()}"/>
+            <h:commandButton value="Weiter zur Bezahlung" action="#{paketModel.gotoBezahlung()}"/>
         </h:form>
     </ui:define>
 </ui:composition>

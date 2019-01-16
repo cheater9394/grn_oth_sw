@@ -1,6 +1,7 @@
 package de.othr.grn.entity;
 
 import de.othr.grn.entity.util.GeneratedIdEntity;
+import de.othr.grn.service.VersandartService;
 
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
@@ -21,6 +22,7 @@ public abstract class Lieferung extends GeneratedIdEntity {
     /**
      * @param gewicht Gewicht des Pakets in Gramm
      */
+
     public Lieferung (Adresse adresse, int gewicht, Versandart versandart) {
         this.adresse = adresse;
         this.gewicht = gewicht;

@@ -19,6 +19,7 @@ public class InitService {
 
     @Transactional
     public void init(){
+        System.out.println("Server init");
         Versandart standart = entityManager.find(Versandart.class, "STD");
         if(standart == null){
             standart = new Versandart("STD","Standart",1.0f);
