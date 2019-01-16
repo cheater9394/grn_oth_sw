@@ -20,7 +20,7 @@ public class PaketModel implements Serializable {
     private Versandart versandart;
     private Collection<Versandart> versandarten;
     private Adresse tmpAdresse = new Adresse("Strasse","PLZ","Ort");
-    private Paket tmpPaket = new Paket("Inhalt", tmpAdresse);
+    private Paket tmpPaket = new Paket("Inhalt", tmpAdresse,0);
     private long kontonr;
 
     @Inject

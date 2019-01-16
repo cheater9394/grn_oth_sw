@@ -13,6 +13,11 @@ public class Paket extends Lieferung{
      * @param inhalt Bezeichner des Paketinhalts
      * @param gewicht Gewicht des Pakets in Gramm
      */
+    public Paket(String inhalt, Adresse adresse, int gewicht) {
+        super(adresse, gewicht);
+        this.inhalt = inhalt;
+    }
+
     public Paket(String inhalt, Adresse adresse, int gewicht, Versandart versandart) {
         super(adresse, gewicht, versandart);
         this.inhalt = inhalt;

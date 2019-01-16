@@ -16,6 +16,12 @@ public class Bestellung extends Lieferung {
      * @param lagergut Referenz auf Inhaltsitem
      * @param anzahl Anzahl der Items
      */
+    public Bestellung(Lagergut lagergut, Adresse adresse, int anzahl) {
+        super(adresse, lagergut.getGewicht()*anzahl);
+        this.lagergut = lagergut;
+        this.anzahl = anzahl;
+    }
+
     public Bestellung(Lagergut lagergut, Adresse adresse, int anzahl, Versandart versandart) {
         super(adresse, lagergut.getGewicht()*anzahl, versandart);
         this.lagergut = lagergut;

@@ -3,6 +3,7 @@ package de.othr.grn.service;
 import de.othr.grn.entity.*;
 
 import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
 import javax.jws.WebMethod;
 import javax.jws.WebParam;
 import javax.jws.WebService;
@@ -19,6 +20,9 @@ import java.util.List;
 public class WarenWirtschaftService implements WarenWirtschaftServiceIF{
 
     //Zugang: http://localhost:8080/grothDHL-0.1/WarenWirtschaftService?wsdl
+
+    @Inject
+    VersandartService versandartService;
 
     @PersistenceContext(unitName = "grPU")
     private EntityManager entityManager;
@@ -40,6 +44,10 @@ public class WarenWirtschaftService implements WarenWirtschaftServiceIF{
                 return neu;
             }
 
+        }
+
+        if(neu.getVersandart() == null){
+            neu.setVersandart(versandartService.findVersandart("STD"));
         }
 
         entityManager.persist(neu);

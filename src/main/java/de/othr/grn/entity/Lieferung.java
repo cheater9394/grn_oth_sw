@@ -22,6 +22,11 @@ public abstract class Lieferung extends GeneratedIdEntity {
     /**
      * @param gewicht Gewicht des Pakets in Gramm
      */
+    public Lieferung (Adresse adresse, int gewicht) {
+        this.adresse = adresse;
+        this.gewicht = gewicht;
+        this.lieferStatus = LieferStatus.s1;
+    }
 
     public Lieferung (Adresse adresse, int gewicht, Versandart versandart) {
         this.adresse = adresse;

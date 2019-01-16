@@ -9,5 +9,8 @@
         <module name="grothDHL" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="grothDHL" target="10" />
+    </bytecodeTargetLevel>
   </component>
 </project>
