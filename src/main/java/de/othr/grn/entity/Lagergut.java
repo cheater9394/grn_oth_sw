@@ -33,6 +33,10 @@ public class Lagergut extends GeneratedIdEntity{
         this.ware = ware;
     }
 
+    public boolean manageEigenlager(int anzahl){
+        return false;
+    }
+
     @Override
     public String toString() {
         return "Lagergut: { ID: " + id + ", Ware: " + ware + ", Gewicht: " + gewicht + "g}";

@@ -49,4 +49,16 @@ public class Adresse{
         return "Adresse {" + strasse + ", " + plz + " " + ort + '}';
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (obj.getClass()==this.getClass()) {
+            Adresse adresse = (Adresse) obj;
+            if (this.strasse == adresse.strasse &&
+                this.plz == adresse.plz &&
+                this.ort == adresse.ort) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

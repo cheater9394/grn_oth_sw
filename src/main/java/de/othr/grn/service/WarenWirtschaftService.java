@@ -31,11 +31,21 @@ public class WarenWirtschaftService implements WarenWirtschaftServiceIF{
         if (neu.getClass() == Bestellung.class){
             Bestellung bestellung = (Bestellung) neu;
             bestellung.setLagergut(createLagergut(bestellung.getLagergut()));
+
+            //Eigenlager managen
+            if(bestellung.getLagergut().manageEigenlager(bestellung.getAnzahl())){
+                //TODO: Mit eigener Adresse vergleichen
+                entityManager.persist(neu);
+                bestellung.setLieferStatus(LieferStatus.s6);
+                return neu;
+            }
+
         }
 
         entityManager.persist(neu);
 
         //TODO: Versand überweißen (lassen)
+        //TODO Klebeband reduzieren
 
         return neu;
     }

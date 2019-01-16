@@ -32,23 +32,31 @@ public class PaketServlet extends HttpServlet {
         out.println("<body>");
         out.println("<h1>Paket-Servlet-Test</h1>");
 
-        Adresse adresse = new Adresse("Weggasse 9","54231","Dorfstadt");
-        Lieferung p = new Paket("Tontauben", adresse,312, Versandart.standart);
-        p=ps.aufgeben(p,1);
-        printObject(out, p);
-        p=ps.empfangen(p);
-        printObject(out, p);
-
-        Lieferung p2 = new Bestellung(new Lagergut("Tontauben", 213), adresse, 7, Versandart.express);
-        p2=ps.aufgeben(p2,1);
-        printObject(out, p2);
-        p2=ps.empfangen(p2);
-        printObject(out, p2);
-
-        List<Lieferung> lieferungen = ps.lieferungenAnzeigen(adresse);
-        for(Lieferung l: lieferungen){
-            printObject(out, l);
-        }
+//        Adresse adresse = new Adresse("Weggasse 9","54231","Dorfstadt");
+//        Lieferung p = new Paket("Tontauben", adresse,312, entityManager.find(Versandart.class, "STD"));
+//        p=ps.aufgeben(p,1);
+//        printObject(out, p);
+//        p=ps.empfangen(p);
+//        printObject(out, p);
+//
+//        Lieferung p2 = new Bestellung(new Lagergut("Tontauben", 213), adresse, 7, Versandart.express);
+//        p2=ps.aufgeben(p2,1);
+//        printObject(out, p2);
+//        p2=ps.empfangen(p2);
+//        printObject(out, p2);
+//
+//        List<Lieferung> lieferungen = ps.lieferungenAnzeigen(adresse);
+//        for(Lieferung l: lieferungen){
+//            printObject(out, l);
+//        }
+//
+//        Lieferung p3 = new Bestellung(new Eigenlager("Klebeband",50, 10), adresse, 7, Versandart.standart);
+//        p3=ps.aufgeben(p3,2);
+//        printObject(out, p3);
+//
+//        Lieferung p4 = new Bestellung(new Lagergut("Klebeband",51), adresse, 3, Versandart.standart);
+//        p4=ps.aufgeben(p4,2);
+//        printObject(out, p4);
 
         out.println("</body>");
         out.println("</html>");

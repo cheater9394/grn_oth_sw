@@ -3,6 +3,8 @@ package de.othr.grn.entity;
 import de.othr.grn.entity.util.GeneratedIdEntity;
 
 import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
+import javax.persistence.FetchType;
 import java.util.Objects;
 
 @Entity
@@ -11,6 +13,7 @@ public abstract class Lieferung extends GeneratedIdEntity {
     private Adresse adresse;
     private int gewicht;
     private LieferStatus lieferStatus;
+    @ManyToOne(fetch = FetchType.EAGER)
     private Versandart versandart;
 
     public Lieferung(){}
@@ -48,6 +51,30 @@ public abstract class Lieferung extends GeneratedIdEntity {
         else versand=2090;
 
         return (long) (versand*versandart.getSpeedfactor());
+    }
+
+    public Adresse getAdresse() {
+        return adresse;
+    }
+
+    public void setAdresse(Adresse adresse) {
+        this.adresse = adresse;
+    }
+
+    public int getGewicht() {
+        return gewicht;
+    }
+
+    public void setGewicht(int gewicht) {
+        this.gewicht = gewicht;
+    }
+
+    public Versandart getVersandart() {
+        return versandart;
+    }
+
+    public void setVersandart(Versandart versandart) {
+        this.versandart = versandart;
     }
 
     public long getLieferNr() {
