@@ -10,6 +10,7 @@
         <h1>Willkommen!</h1>
         <h2>Sie befinden sich auf (aufgeben.xhtml)</h2>
         <h:form>
+            <h:outputText value="Paket:"/>
             <h:panelGrid columns="2">
                 <h:outputText value="Inhalt:"/>
                 <h:inputText value="#{paketModel.tmpPaket.inhalt}"/>
@@ -20,6 +21,9 @@
                     <f:converter binding="#{paketModel.versandartConverter}"/>
                     <f:selectItems value="#{paketModel.versandarten}"/>
                 </h:selectOneMenu>
+            </h:panelGrid><br/>
+            <h:outputText value="Zieladresse:"/>
+            <h:panelGrid columns="2">
                 <h:outputText value="Straße:"/>
                 <h:inputText value="#{paketModel.tmpAdresse.strasse}"/>
                 <h:outputText value="PLZ:"/>

@@ -22,6 +22,7 @@ public class PaketModel implements Serializable {
     private Adresse tmpAdresse = new Adresse("Strasse","PLZ","Ort");
     private Paket tmpPaket = new Paket("Inhalt", tmpAdresse,0);
     private long kontonr;
+    private long versandkosten;
 
     @Inject
     private VersandartService versandartService;
@@ -33,7 +34,14 @@ public class PaketModel implements Serializable {
     private VersandartConverter versandartConverter;
 
     public String gotoBezahlung(){
+        versandkosten = tmpPaket.versandBerechnen();
         return "bezahlung";
+    }
+
+    public String paketBestaetigen(){
+        Paket neu = new Paket(tmpPaket.getInhalt(),tmpPaket.getAdresse(),tmpPaket.getGewicht());
+        tmpPaket = (Paket) warenWirtschaftService.aufgeben(neu, kontonr);
+        return "paketbestaetigt";
     }
 
     public Paket getTmpPaket() {
@@ -100,5 +108,9 @@ public class PaketModel implements Serializable {
 
     public void setVersandartConverter(VersandartConverter versandartConverter) {
         this.versandartConverter = versandartConverter;
+    }
+
+    public String getVersandkostenAsEuro(){
+        return warenWirtschaftService.longToEuro(versandkosten);
     }
 }

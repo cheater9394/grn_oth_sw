@@ -24,8 +24,12 @@
             <to-view-id>/verwaltung/uebersicht.xhtml</to-view-id>
         </navigation-case>
         <navigation-case>
-            <from-outcome>bezahlungh</from-outcome>
+            <from-outcome>bezahlung</from-outcome>
             <to-view-id>/pakete/bezahlung.xhtml</to-view-id>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>paketbestaetigt</from-outcome>
+            <to-view-id>/pakete/bestaetigung.xhtml</to-view-id>
         </navigation-case>
     </navigation-rule>
 

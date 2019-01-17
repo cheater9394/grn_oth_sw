@@ -1,6 +1,10 @@
 package de.othr.grn.service;
 
 import de.othr.grn.entity.*;
+import vilsmeier.Transaktion;
+import vilsmeier.TransaktionsService;
+import vilsmeier.TransaktionsServiceService;
+import vilsmeier.Transaktionstyp;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -24,6 +28,9 @@ public class WarenWirtschaftService implements WarenWirtschaftServiceIF{
     @Inject
     VersandartService versandartService;
 
+    @Inject
+    ConstantService constantService;
+
     @PersistenceContext(unitName = "grPU")
     private EntityManager entityManager;
 
@@ -37,23 +44,42 @@ public class WarenWirtschaftService implements WarenWirtschaftServiceIF{
             bestellung.setLagergut(createLagergut(bestellung.getLagergut()));
 
             //Eigenlager managen
-            if(bestellung.getLagergut().manageEigenlager(bestellung.getAnzahl())){
-                //TODO: Mit eigener Adresse vergleichen
-                entityManager.persist(neu);
-                bestellung.setLieferStatus(LieferStatus.s6);
-                return neu;
+            if(bestellung.getAdresse().equals(constantService.getEigeneAdresse())){
+                if(bestellung.getLagergut().manageEigenlager(bestellung.getAnzahl())){
+                    entityManager.persist(neu);
+                    bestellung.setLieferStatus(LieferStatus.s6);
+                    return neu;
+                }
             }
 
         }
 
         if(neu.getVersandart() == null){
-            neu.setVersandart(versandartService.findVersandart("STD"));
+            neu.setVersandart(versandartService.findVersandart("0.STD"));
         }
 
         entityManager.persist(neu);
 
         //TODO: Versand überweißen (lassen)
-        //TODO Klebeband reduzieren
+        TransaktionsServiceService transaktionsServiceService = new TransaktionsServiceService();
+        TransaktionsService stub = transaktionsServiceService.getTransaktionsServicePort();
+
+        Transaktion transaktion = new Transaktion();
+        transaktion.setVon(constantService.getKontonr());
+        transaktion.setZu(kontoNr);
+        transaktion.setBetrag(neu.versandBerechnen());
+        transaktion.setVerwendungszweck("Versandkosten von PaketNr: " + neu.getLieferNr());
+        stub.transaktionTaetigen(transaktion);
+
+        TypedQuery<Lagergut> query = entityManager.createQuery(
+                "SELECT s FROM Lagergut AS s WHERE s.ware = :ware",Lagergut.class);
+        query.setParameter("ware",constantService.getKlebeband());
+        Eigenlager klebenand = (Eigenlager) query.getSingleResult();
+        klebenand.setAnzahl(klebenand.getAnzahl()-1);
+
+        if (klebenand.getAnzahl()<5){
+            klebebandBestellen();
+        }
 
         return neu;
     }
@@ -70,6 +96,18 @@ public class WarenWirtschaftService implements WarenWirtschaftServiceIF{
     @Transactional
     public void klebebandBestellen() {
         //TODO: Schnittstelle von BBestellungen importieren
+    }
+
+    @Transactional
+    public int getKlebebandAnzahl(){
+        try{
+            TypedQuery<Lagergut> query = entityManager.createQuery(
+                    "SELECT s FROM Lagergut AS s WHERE s.ware = :ware",Lagergut.class);
+            query.setParameter("ware",constantService.getKlebeband());
+            return ((Eigenlager) query.getSingleResult()).getAnzahl();
+        }catch (NoResultException e){
+            return 0;
+        }
     }
 
     @Override
@@ -102,6 +140,10 @@ public class WarenWirtschaftService implements WarenWirtschaftServiceIF{
             entityManager.persist(lagergut);
             return lagergut;
         }
+    }
+
+    public String longToEuro(long betrag){
+        return ((betrag/100L) + "," + (betrag%100L) + "€");
     }
 
 }

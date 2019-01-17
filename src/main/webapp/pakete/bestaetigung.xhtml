@@ -7,8 +7,8 @@
 
 <ui:composition template="../WEB-INF/templates/basicTemplate.xhtml">
     <ui:define name="content">
-        <h1>Willkommen!</h1>
-        <h2>Sie befinden sich auf (bezahlung.xhtml)</h2>
+        <h1>Vielen Dank für ihre Versendung</h1>
+        <h2>Sie befinden sich auf (bestaetigung.xhtml)</h2>
         <h:form>
             <h:outputText value="Paket:"/>
             <h:panelGrid columns="2">
@@ -27,12 +27,11 @@
                 <h:outputText value="#{paketModel.tmpAdresse.plz}"/>
                 <h:outputText value="#{paketModel.tmpAdresse.ort}"/>
             </h:panelGrid>
-                <h2><h:outputText value="Versandkosten: #{paketModel.versandkostenAsEuro}"/></h2>
+            <h2><h:outputText value="Versandkosten: #{paketModel.versandkostenAsEuro}"/></h2>
             <h:panelGrid columns="2">
-                <h:outputText value="Bitte geben Sie ihre VilsmeierBank-Kontonummer an:"/>
-                <h:inputText value="#{paketModel.kontonr}"/>
+                <h:outputText value="VilsmeierBank-Kontonummer:"/>
+                <h:outputText value="#{paketModel.kontonr}"/>
             </h:panelGrid>
-            <h:commandButton value="Bestätigen" action="#{paketModel.paketBestaetigen()}"/>
         </h:form>
     </ui:define>
 </ui:composition>

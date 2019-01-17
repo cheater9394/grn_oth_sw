@@ -11,6 +11,7 @@ import java.util.Objects;
 @Entity
 public abstract class Lieferung extends GeneratedIdEntity {
 
+
     private Adresse adresse;
     private int gewicht;
     private LieferStatus lieferStatus;

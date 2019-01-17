@@ -54,11 +54,14 @@
 
 #top a:link, #top a:visited {
     color: white;
-    font-weight : bold;
+    font-weight : bolder;
     text-decoration: none;
+    font-style: italic;
 }
 
 #top a:link:hover, #top a:visited:hover  {
     color: #d40511;
-    font-weight : bold;
+    font-weight : bolder;
+    font-style: italic;
+
 }
