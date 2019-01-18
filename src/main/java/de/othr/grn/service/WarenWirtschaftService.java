@@ -1,6 +1,9 @@
 package de.othr.grn.service;
 
+import com.sun.istack.Interned;
 import de.othr.grn.entity.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import vilsmeier.Transaktion;
 import vilsmeier.TransaktionsService;
 import vilsmeier.TransaktionsServiceService;
@@ -34,18 +37,22 @@ public class WarenWirtschaftService implements WarenWirtschaftServiceIF{
     @PersistenceContext(unitName = "grPU")
     private EntityManager entityManager;
 
+    Logger logger = LoggerFactory.getLogger(WarenWirtschaftService.class);
+
     @Override
     @Transactional
-    @WebMethod
-    public Lieferung aufgeben(@WebParam(name = "Lieferung") Lieferung neu,@WebParam(name = "Kontonummer") long kontoNr){
+    public Lieferung aufgeben(Lieferung neu,long kontoNr){
+        logger.info("Lieferung wird aufgeben: " + neu.toString());
 
         if (neu.getClass() == Bestellung.class){
+            logger.info("Lieferung als Bestellung identifiziert");
             Bestellung bestellung = (Bestellung) neu;
             bestellung.setLagergut(createLagergut(bestellung.getLagergut()));
 
             //Eigenlager managen
             if(bestellung.getAdresse().equals(constantService.getEigeneAdresse())){
                 if(bestellung.getLagergut().manageEigenlager(bestellung.getAnzahl())){
+                    logger.info(constantService.getKlebeband() + "-Bestellung identifiziert, Eigenlager erhöht");
                     entityManager.persist(neu);
                     bestellung.setLieferStatus(LieferStatus.s6);
                     return neu;
@@ -56,11 +63,13 @@ public class WarenWirtschaftService implements WarenWirtschaftServiceIF{
 
         if(neu.getVersandart() == null){
             neu.setVersandart(versandartService.findVersandart("0.STD"));
+            logger.info("Versandart fehlt; auf Standartversand gesetzt");
         }
 
         entityManager.persist(neu);
 
         //TODO: Versand überweißen (lassen)
+        logger.info("Versandüberweißung eingeleitet");
         TransaktionsServiceService transaktionsServiceService = new TransaktionsServiceService();
         TransaktionsService stub = transaktionsServiceService.getTransaktionsServicePort();
 
@@ -69,7 +78,9 @@ public class WarenWirtschaftService implements WarenWirtschaftServiceIF{
         transaktion.setZu(kontoNr);
         transaktion.setBetrag(neu.versandBerechnen());
         transaktion.setVerwendungszweck("Versandkosten von PaketNr: " + neu.getLieferNr());
-        stub.transaktionTaetigen(transaktion);
+        logger.info("Versandkosten Ueberweisung wird abgeschickt");
+        transaktion = stub.transaktionTaetigen(transaktion);
+        logger.info("Transaktion " + (transaktion.isAbgeschlossen()?"erfolgreich":"gescheitert"));
 
         TypedQuery<Lagergut> query = entityManager.createQuery(
                 "SELECT s FROM Lagergut AS s WHERE s.ware = :ware",Lagergut.class);
@@ -79,9 +90,17 @@ public class WarenWirtschaftService implements WarenWirtschaftServiceIF{
 
         if (klebenand.getAnzahl()<5){
             klebebandBestellen();
+            logger.info("Klebandstand gering, neues wird bestellt");
         }
 
         return neu;
+    }
+
+    @Override
+    @Transactional
+    @WebMethod
+    public Lieferung bestellungAufgeben(@WebParam(name = "Bestellung") Bestellung neu,@WebParam(name = "Kontonummer") long kontoNr){
+        return aufgeben(neu,kontoNr);
     }
 
     @Override

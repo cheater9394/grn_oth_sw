@@ -38,6 +38,10 @@ public class Bestellung extends Lieferung {
 
     public int getAnzahl() { return anzahl; }
 
+    public void setAnzahl(int anzahl) {
+        this.anzahl = anzahl;
+    }
+
     @Override
     public String toString() {
         return "Bestellung { " + lagergut.toString() + " x" + anzahl + ",\'" +

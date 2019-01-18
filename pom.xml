@@ -40,6 +40,14 @@
             <type>pom</type>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/com.sun.org.apache.xml.internal/resolver -->
+        <dependency>
+            <groupId>com.sun.org.apache.xml.internal</groupId>
+            <artifactId>resolver</artifactId>
+            <version>20050927</version>
+        </dependency>
+
+
     </dependencies>
 
     <properties>
