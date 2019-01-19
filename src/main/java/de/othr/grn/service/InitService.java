@@ -26,6 +26,8 @@ public class InitService {
 
     Logger logger = LoggerFactory.getLogger(InitService.class);
 
+    private Eigenlager klebeband;
+
     @Transactional
     public void init(){
         logger.info("Init eingeleitet");
@@ -42,7 +44,7 @@ public class InitService {
 
         try{
             TypedQuery<Lagergut> query = entityManager.createQuery(
-                    "SELECT s FROM Lagergut AS s WHERE s.ware = :ware",Lagergut.class);
+                    "SELECT s FROM Eigenlager AS s WHERE s.ware = :ware",Lagergut.class);
             query.setParameter("ware",constantService.getKlebeband());
             query.getSingleResult();
         }catch (NoResultException e){

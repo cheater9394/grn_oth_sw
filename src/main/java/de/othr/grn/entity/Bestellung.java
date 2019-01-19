@@ -1,12 +1,14 @@
 package de.othr.grn.entity;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 
 @Entity
 public class Bestellung extends Lieferung {
 
-    @ManyToOne
+    @ManyToOne (fetch = FetchType.EAGER)
     private Lagergut lagergut;
     private int anzahl;
 

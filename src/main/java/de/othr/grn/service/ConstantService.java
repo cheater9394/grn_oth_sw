@@ -10,6 +10,7 @@ public class ConstantService {
     private final Adresse eigeneAdresse = new Adresse("Unterweg 5","99994","Zentral-Posten");
     private final long kontonr = 1000005L;
     private final String klebeband = "Paketband";
+    private final String statusUrl = "/pakete/statusverfolgung.xhtml?lieferNr=";
 
     public Adresse getEigeneAdresse() {
         return eigeneAdresse;
@@ -21,5 +22,9 @@ public class ConstantService {
 
     public long getKontonr() {
         return kontonr;
+    }
+
+    public String getStatusUrl() {
+        return statusUrl;
     }
 }

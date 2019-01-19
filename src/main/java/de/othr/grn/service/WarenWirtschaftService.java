@@ -12,10 +12,7 @@ import javax.inject.Inject;
 import javax.jws.WebMethod;
 import javax.jws.WebParam;
 import javax.jws.WebService;
-import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
-import javax.persistence.PersistenceContext;
-import javax.persistence.TypedQuery;
+import javax.persistence.*;
 import javax.transaction.Transactional;
 import java.util.Collection;
 import java.util.List;
@@ -42,34 +39,44 @@ public class WarenWirtschaftService implements WarenWirtschaftServiceIF{
     public Lieferung aufgeben(Lieferung neu,long kontoNr){
         logger.info("Lieferung wird aufgeben: " + neu.toString());
 
+        Lieferung tmpLief;
+        Adresse tmpAdr = new Adresse();
+        tmpAdr.setStrasse(neu.getAdresse().getStrasse());
+        tmpAdr.setPlz(neu.getAdresse().getPlz());
+        tmpAdr.setOrt(neu.getAdresse().getOrt());
+
         if (neu.getClass() == Bestellung.class){
             logger.info("Lieferung als Bestellung identifiziert");
-            Bestellung bestellung = (Bestellung) neu;
-            neu = new Bestellung(((Bestellung) neu).getLagergut(),neu.getAdresse(),((Bestellung) neu).getAnzahl());
-            bestellung.setLagergut(createLagergut(bestellung.getLagergut()));
+            Bestellung bestellung =  new Bestellung(createLagergut(((Bestellung)neu).getLagergut()),tmpAdr,((Bestellung) neu).getAnzahl());
 
             //Eigenlager managen
             if(bestellung.getAdresse().equals(constantService.getEigeneAdresse())){
                 if(bestellung.getLagergut().manageEigenlager(bestellung.getAnzahl())){
                     logger.info(constantService.getKlebeband() + "-Bestellung identifiziert, Eigenlager erhöht");
-                    entityManager.persist(neu);
+                    entityManager.persist(bestellung);
                     bestellung.setLieferStatus(LieferStatus.s6);
-                    return neu;
+                    return bestellung;
                 }
             }
-
+            tmpLief = bestellung;
+        }else{
+            Paket paket = new Paket();
+            paket.setInhalt(((Paket)neu).getInhalt());
+            paket.setGewicht(neu.getGewicht());
+            paket.setAdresse(tmpAdr);
+            tmpLief = paket;
         }
 
         if(neu.getVersandart() == null){
-            neu.setVersandart(versandartService.findVersandart("0.STD"));
+            tmpLief.setVersandart(versandartService.findVersandart("0.STD"));
             logger.info("Versandart fehlt; auf Standartversand gesetzt");
+        }else{
+            tmpLief.setVersandart(neu.getVersandart());
         }
 
-        entityManager.persist(neu);
-        neu.setLieferStatus(LieferStatus.s1);
-        neu.setVerfolgungsNr(neu.hashCode());
+        tmpLief.setLieferStatus(LieferStatus.s1);
+        entityManager.persist(tmpLief);
 
-        //TODO: Versand überweißen (lassen)
         logger.info("Versandüberweißung eingeleitet");
         TransaktionsServiceService transaktionsServiceService = new TransaktionsServiceService();
         TransaktionsService stub = transaktionsServiceService.getTransaktionsServicePort();
@@ -77,24 +84,26 @@ public class WarenWirtschaftService implements WarenWirtschaftServiceIF{
         Transaktion transaktion = new Transaktion();
         transaktion.setVon(kontoNr);
         transaktion.setZu(constantService.getKontonr());
-        transaktion.setBetrag(neu.versandBerechnen());
-        transaktion.setVerwendungszweck("Versandkosten von PaketNr: " + neu.getLieferNr());
+        transaktion.setBetrag(tmpLief.versandBerechnen());
+        transaktion.setVerwendungszweck("Versandkosten von PaketNr: " + tmpLief.getLieferNr());
         logger.info("Versandkosten Ueberweisung über: "+ transaktion.getBetrag() +" wird abgeschickt");
         transaktion = stub.transaktionTaetigen(transaktion);
         logger.info("Transaktion " + (transaktion.isAbgeschlossen()?"erfolgreich":"gescheitert"));
 
-        TypedQuery<Lagergut> query = entityManager.createQuery(
-                "SELECT s FROM Lagergut AS s WHERE s.ware = :ware",Lagergut.class);
+        Query query = entityManager.createQuery(
+                "SELECT s FROM Eigenlager AS s WHERE s.ware = :ware",Eigenlager.class);
         query.setParameter("ware",constantService.getKlebeband());
-        Eigenlager klebenand = (Eigenlager) query.getSingleResult();
-        klebenand.setAnzahl(klebenand.getAnzahl()-1);
+        Eigenlager klebeband = (Eigenlager) query.getSingleResult();
+        klebeband.setAnzahl(klebeband.getAnzahl()-1);
+        klebeband = entityManager.merge(klebeband);
 
-        if (klebenand.getAnzahl()<5){
+        if (klebeband.getAnzahl()<5){
             klebebandBestellen();
             logger.info("Klebandstand gering, neues wird bestellt");
         }
 
-        return neu;
+        return tmpLief;
+        // TODO: Lieferungsstatus über Zeit? verändern
     }
 
     @Override
@@ -109,6 +118,7 @@ public class WarenWirtschaftService implements WarenWirtschaftServiceIF{
     public Lieferung empfangen(Lieferung versandt){
         Lieferung temp = entityManager.find(Lieferung.class, versandt.getLieferNr());
         temp.setLieferStatus(LieferStatus.s6);
+        entityManager.merge(temp);
         return temp;
     }
 
@@ -169,18 +179,24 @@ public class WarenWirtschaftService implements WarenWirtschaftServiceIF{
     @Transactional
     private Lagergut createLagergut(Lagergut lagergut){
         try{
-            TypedQuery<Lagergut> query = entityManager.createQuery(
+            Query query = entityManager.createQuery(
                     "SELECT s FROM Lagergut AS s WHERE s.ware = :ware",Lagergut.class);
             query.setParameter("ware",lagergut.getWare());
-            return query.getSingleResult();
+            return (Lagergut) query.getSingleResult();
         }catch(NoResultException e) {
-            entityManager.persist(lagergut);
-            return lagergut;
+            Lagergut tmpLag = new Lagergut();
+            tmpLag.setWare(lagergut.getWare());
+            tmpLag.setGewicht(lagergut.getGewicht());
+            entityManager.persist(tmpLag);
+            return tmpLag;
         }
     }
 
     public String longToEuro(long betrag){
-        return ((betrag/100L) + "," + (betrag%100L) + "€");
+        String nachKomma = (betrag%100L)+"";
+        if((betrag%100L)<10)
+            nachKomma = 0+nachKomma;
+        return ((betrag/100L) + "," + nachKomma + "€");
     }
 
 }
