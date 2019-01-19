@@ -1,25 +1,23 @@
 package de.othr.grn.service;
 
-import com.sun.istack.Interned;
 import de.othr.grn.entity.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import vilsmeier.Transaktion;
 import vilsmeier.TransaktionsService;
 import vilsmeier.TransaktionsServiceService;
-import vilsmeier.Transaktionstyp;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.jws.WebMethod;
 import javax.jws.WebParam;
 import javax.jws.WebService;
-import javax.naming.Name;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import javax.transaction.Transactional;
+import java.util.Collection;
 import java.util.List;
 
 @RequestScoped
@@ -47,6 +45,7 @@ public class WarenWirtschaftService implements WarenWirtschaftServiceIF{
         if (neu.getClass() == Bestellung.class){
             logger.info("Lieferung als Bestellung identifiziert");
             Bestellung bestellung = (Bestellung) neu;
+            neu = new Bestellung(((Bestellung) neu).getLagergut(),neu.getAdresse(),((Bestellung) neu).getAnzahl());
             bestellung.setLagergut(createLagergut(bestellung.getLagergut()));
 
             //Eigenlager managen
@@ -67,6 +66,8 @@ public class WarenWirtschaftService implements WarenWirtschaftServiceIF{
         }
 
         entityManager.persist(neu);
+        neu.setLieferStatus(LieferStatus.s1);
+        neu.setVerfolgungsNr(neu.hashCode());
 
         //TODO: Versand überweißen (lassen)
         logger.info("Versandüberweißung eingeleitet");
@@ -74,11 +75,11 @@ public class WarenWirtschaftService implements WarenWirtschaftServiceIF{
         TransaktionsService stub = transaktionsServiceService.getTransaktionsServicePort();
 
         Transaktion transaktion = new Transaktion();
-        transaktion.setVon(constantService.getKontonr());
-        transaktion.setZu(kontoNr);
+        transaktion.setVon(kontoNr);
+        transaktion.setZu(constantService.getKontonr());
         transaktion.setBetrag(neu.versandBerechnen());
         transaktion.setVerwendungszweck("Versandkosten von PaketNr: " + neu.getLieferNr());
-        logger.info("Versandkosten Ueberweisung wird abgeschickt");
+        logger.info("Versandkosten Ueberweisung über: "+ transaktion.getBetrag() +" wird abgeschickt");
         transaktion = stub.transaktionTaetigen(transaktion);
         logger.info("Transaktion " + (transaktion.isAbgeschlossen()?"erfolgreich":"gescheitert"));
 
@@ -146,6 +147,23 @@ public class WarenWirtschaftService implements WarenWirtschaftServiceIF{
         System.out.println("GEFUNDEN " + gefunden);
 
         return gefunden;
+    }
+
+    public Collection<Lieferung> getAlleLieferungen(){
+        TypedQuery<Lieferung> query = entityManager.createQuery("SELECT s FROM Lieferung AS s", Lieferung.class);
+        return query.getResultList();
+    }
+
+    @Transactional
+    public Lieferung loescheLieferung(Lieferung lieferung){
+        lieferung = entityManager.find(Lieferung.class, lieferung.getId());
+        entityManager.remove(lieferung);
+        return lieferung;
+    }
+
+    public Collection<Lagergut> getAlleLagergueter(){
+        TypedQuery<Lagergut> query = entityManager.createQuery("SELECT s FROM Lagergut AS s", Lagergut.class);
+        return query.getResultList();
     }
 
     @Transactional

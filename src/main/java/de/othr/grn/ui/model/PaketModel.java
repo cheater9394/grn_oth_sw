@@ -19,8 +19,8 @@ public class PaketModel implements Serializable {
 
     private Versandart versandart;
     private Collection<Versandart> versandarten;
-    private Adresse tmpAdresse = new Adresse("Strasse","PLZ","Ort");
-    private Paket tmpPaket = new Paket("Inhalt", tmpAdresse,0);
+    private Adresse tmpAdresse = new Adresse();
+    private Paket tmpPaket = new Paket();
     private long kontonr;
     private long versandkosten;
 
@@ -39,7 +39,8 @@ public class PaketModel implements Serializable {
     }
 
     public String paketBestaetigen(){
-        Paket neu = new Paket(tmpPaket.getInhalt(),tmpPaket.getAdresse(),tmpPaket.getGewicht());
+        Adresse adr = new Adresse(tmpAdresse.getStrasse(),tmpAdresse.getPlz(),tmpAdresse.getOrt());
+        Paket neu = new Paket(tmpPaket.getInhalt(),adr,tmpPaket.getGewicht(),tmpPaket.getVersandart());
         tmpPaket = (Paket) warenWirtschaftService.aufgeben(neu, kontonr);
         return "paketbestaetigt";
     }

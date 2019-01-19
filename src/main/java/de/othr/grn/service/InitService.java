@@ -46,7 +46,7 @@ public class InitService {
             query.setParameter("ware",constantService.getKlebeband());
             query.getSingleResult();
         }catch (NoResultException e){
-            Eigenlager klebeband = new Eigenlager(constantService.getKlebeband(), 150, 5);
+            Eigenlager klebeband = new Eigenlager(constantService.getKlebeband(), 150, 50);
             entityManager.persist(klebeband);
             logger.info("Init "+ constantService.getKlebeband() +" durchgeführt");
         }

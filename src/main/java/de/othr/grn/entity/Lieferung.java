@@ -1,7 +1,6 @@
 package de.othr.grn.entity;
 
 import de.othr.grn.entity.util.GeneratedIdEntity;
-import de.othr.grn.service.VersandartService;
 
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
@@ -17,6 +16,7 @@ public abstract class Lieferung extends GeneratedIdEntity {
     private LieferStatus lieferStatus;
     @ManyToOne(fetch = FetchType.EAGER)
     private Versandart versandart;
+    private int verfolgungsNr;
 
     public Lieferung(){}
 
@@ -95,6 +95,14 @@ public abstract class Lieferung extends GeneratedIdEntity {
 
     public void setLieferStatus(LieferStatus lieferStatus) {
         this.lieferStatus = lieferStatus;
+    }
+
+    public int getVerfolgungsNr() {
+        return verfolgungsNr;
+    }
+
+    public void setVerfolgungsNr(int verfolgungsNr) {
+        this.verfolgungsNr = verfolgungsNr;
     }
 
     @Override

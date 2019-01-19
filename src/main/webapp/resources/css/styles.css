@@ -35,3 +35,21 @@ a:link:hover, a:visited:hover  {
     font-weight : bold;
     text-decoration : underline;
 }
+
+table{
+    border-collapse: collapse;
+}
+
+.LieferTable table, .LieferTable th, .LieferTable td{
+    border-bottom: 1px solid grey;
+    padding: 0.5em;
+    text-align: left;
+}
+
+.LieferTable table{
+    border: 1px solid black;
+}
+
+.LieferTable tr:hover{
+    background-color: lightgrey;
+}

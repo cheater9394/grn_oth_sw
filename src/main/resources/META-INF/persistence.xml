@@ -5,7 +5,7 @@
         <jta-data-source>java:/jboss/clever_easley</jta-data-source>
         <exclude-unlisted-classes>false</exclude-unlisted-classes>
         <properties>
-            <property name="hibernate.hbm2ddl.auto" value="create-drop"/> <!-- change "update" to "create-drop" for cleanup-->
+            <property name="hibernate.hbm2ddl.auto" value="update"/> <!-- change "update" to "create-drop" for cleanup-->
             <property name="hibernate.dialect" value="org.hibernate.dialect.MySQL57Dialect"/>
         </properties>
     </persistence-unit>

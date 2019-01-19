@@ -2,14 +2,103 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-      xmlns:h="http://xmlns.jcp.org/jsf/html">
+      xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core">
 
 <ui:composition template="../WEB-INF/templates/basicTemplate.xhtml">
     <ui:define name="content">
         <h1>Willkommen!</h1>
         <h2>Sie befinden sich auf (uebersicht.xhtml)</h2>
         <h:form>
-            <h:outputText value="Klebeband auf Lager: #{verwaltungModel.klebebandAnzahl}"/>
+            <h:dataTable var="lager" styleClass="LieferTable" value="#{verwaltungModel.lagergueter}">
+                <f:facet name="header">
+                    <h:outputText value="Liste aller aktuellen Güter im Lager"/>
+                </f:facet>
+                <h:column>
+                    <f:facet name="header">
+                        <h:outputText value="ID"/>
+                    </f:facet>
+                    <h:outputText value="#{lager.id}"/>
+                </h:column>
+                <h:column>
+                    <f:facet name="header">
+                        <h:outputText value="Ware"/>
+                    </f:facet>
+                    <h:outputText value="#{lager.ware}"/>
+                </h:column>
+                <h:column>
+                    <f:facet name="header">
+                        <h:outputText value="Gewicht"/>
+                    </f:facet>
+                    <h:outputText value="#{lager.gewicht}"/>
+                </h:column>
+                <h:column>
+                    <f:facet name="header">
+                        <h:outputText value="Anzahl"/>
+                    </f:facet>
+                    <h:outputText value="#{verwaltungModel.castToEigenlager(lager).anzahl}" rendered="#{verwaltungModel.isEigenlager(lager)}"/>
+                    <h:outputText value="unbegrenzt" rendered="#{!verwaltungModel.isEigenlager(lager)}"/>
+                </h:column>
+            </h:dataTable>
+            <br/>
+            <br/>
+            <h:dataTable var="lief" styleClass="LieferTable" value="#{verwaltungModel.lieferungen}">
+                <f:facet name="header">
+                    <h:outputText value="Alle aktuell im Umlauf befindlichen Lieferungen"/>
+                </f:facet>
+                <h:column>
+                    <f:facet name="header">
+                        <h:outputText value="ID"/>
+                    </f:facet>
+                    <h:outputText value="#{lief.id}"/>
+                </h:column>
+                <h:column>
+                    <h:outputText value="#{verwaltungModel.castToBestellung(lief).anzahl}x" rendered="#{verwaltungModel.isBestellung(lief)}"/>
+                </h:column>
+                <h:column>
+                    <f:facet name="header">
+                        <h:outputText value="Inhalt"/>
+                    </f:facet>
+                    <h:outputText value="#{verwaltungModel.castToBestellung(lief).lagergut.ware}" rendered="#{verwaltungModel.isBestellung(lief)}"/>
+                    <h:outputText value="#{verwaltungModel.castToPaket(lief).inhalt}" rendered="#{!verwaltungModel.isBestellung(lief)}"/>
+                </h:column>
+                <h:column>
+                    <h:outputText value="(ID: #{verwaltungModel.castToBestellung(lief).lagergut.id})" rendered="#{verwaltungModel.isBestellung(lief)}"/>
+                </h:column>
+                <h:column>
+                    <f:facet name="header">
+                        <h:outputText value="Gewicht"/>
+                    </f:facet>
+                    <h:outputText value="#{lief.gewicht}g"/>
+                </h:column>
+                <h:column>
+                    <f:facet name="header">
+                        <h:outputText value="Adresse"/>
+                    </f:facet>
+                    <h:outputText value="#{lief.adresse.strasse}"/><br/>
+                    <h:outputText value="#{lief.adresse.plz} #{lief.adresse.ort}"/>
+                </h:column>
+                <h:column>
+                    <f:facet name="header">
+                        <h:outputText value="Versandart"/>
+                    </f:facet>
+                    <h:outputText value="#{lief.versandart}"/>
+                </h:column>
+                <h:column>
+                    <f:facet name="header">
+                        <h:outputText value="Lieferstatus"/>
+                    </f:facet>
+                    <h:outputText value="#{lief.lieferStatus.toString()}"/>
+                </h:column>
+                <h:column>
+                    <f:facet name="header">
+                        <h:outputText value="VerfolgungsNr"/>
+                    </f:facet>
+                    <h:outputText value="#{lief.verfolgungsNr}"/>
+                </h:column>
+                <h:column>
+                    <h:commandButton value="Löschen" action="#{verwaltungModel.loescheLieferung(lief)}"/>
+                </h:column>
+            </h:dataTable>
         </h:form>
     </ui:define>
 </ui:composition>

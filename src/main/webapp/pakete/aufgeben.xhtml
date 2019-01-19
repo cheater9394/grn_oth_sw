@@ -13,9 +13,11 @@
             <h:outputText value="Paket:"/>
             <h:panelGrid columns="2">
                 <h:outputText value="Inhalt:"/>
-                <h:inputText value="#{paketModel.tmpPaket.inhalt}"/>
-                <h:outputText value="Gewicht:"/>
-                <h:inputText value="#{paketModel.tmpPaket.gewicht}"/>
+                <h:inputText value="#{paketModel.tmpPaket.inhalt}" required="true"/>
+                <h:outputText value="Gewicht in gramm:"/>
+                <h:inputText value="#{paketModel.tmpPaket.gewicht}">
+                    <f:validateLongRange minimum="1"/>
+                </h:inputText>
                 <h:outputText value="Versandart:"/>
                 <h:selectOneMenu value="#{paketModel.tmpPaket.versandart}">
                     <f:converter binding="#{paketModel.versandartConverter}"/>
@@ -25,12 +27,13 @@
             <h:outputText value="Zieladresse:"/>
             <h:panelGrid columns="2">
                 <h:outputText value="Straße:"/>
-                <h:inputText value="#{paketModel.tmpAdresse.strasse}"/>
+                <h:inputText value="#{paketModel.tmpAdresse.strasse}" required="true"/>
                 <h:outputText value="PLZ:"/>
-                <h:inputText value="#{paketModel.tmpAdresse.plz}"/>
+                <h:inputText value="#{paketModel.tmpAdresse.plz}" required="true"/>
                 <h:outputText value="Ort:"/>
-                <h:inputText value="#{paketModel.tmpAdresse.ort}"/>
+                <h:inputText value="#{paketModel.tmpAdresse.ort}" required="true"/>
             </h:panelGrid>
+
             <h:commandButton value="Weiter zur Bezahlung" action="#{paketModel.gotoBezahlung()}"/>
         </h:form>
     </ui:define>
