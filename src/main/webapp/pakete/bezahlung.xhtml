@@ -7,7 +7,6 @@
 
 <ui:composition template="../WEB-INF/templates/basicTemplate.xhtml">
     <ui:define name="content">
-        <h1>Willkommen!</h1>
         <h2>Sie befinden sich auf (bezahlung.xhtml)</h2>
         <h:form>
             <h:outputText value="Paket:"/>
@@ -35,6 +34,9 @@
             <h:commandButton value="Zurück" action="aufgeben"/>
             <h:commandButton value="Bestätigen" action="#{paketModel.paketBestaetigen()}"/>
         </h:form>
+    </ui:define>
+    <ui:define name="left">
+        Sie befinden sich nun auf der Bezahlungsseite des Paketaufgabeservices. Bitte geben Sie hier eine gültige und zahlungsfähige Kontonummer der Vilsmeier-Bank an. Sie können auch mit "Zurück" ihre Paketinformationen überarbeiten.
     </ui:define>
 </ui:composition>
 

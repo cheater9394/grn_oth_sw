@@ -110,6 +110,7 @@ public class WarenWirtschaftService implements WarenWirtschaftServiceIF{
     @Transactional
     @WebMethod
     public Lieferung bestellungAufgeben(@WebParam(name = "Bestellung") Bestellung neu,@WebParam(name = "Kontonummer") long kontoNr){
+        logger.info("Bestellung empfangen, Auftrag wird aufgegeben");
         return aufgeben(neu,kontoNr);
     }
 
@@ -136,12 +137,14 @@ public class WarenWirtschaftService implements WarenWirtschaftServiceIF{
             query.setParameter("ware",constantService.getKlebeband());
             return ((Eigenlager) query.getSingleResult()).getAnzahl();
         }catch (NoResultException e){
+            logger.error(constantService.getKlebeband()+" nicht gefunden.");
             return 0;
         }
     }
 
     @Override
     @Transactional
+    //TODO: löschen
     public List<Lieferung> lieferungenAnzeigen(Adresse adresse) {
         TypedQuery<Lieferung> query = entityManager.createQuery(
                 "SELECT s FROM Lieferung AS s WHERE s.adresse = :adresse",
@@ -154,7 +157,7 @@ public class WarenWirtschaftService implements WarenWirtschaftServiceIF{
     public Lieferung findeLieferung(long paketNr) {
         Lieferung gefunden = entityManager.find(Lieferung.class, paketNr);
 
-        System.out.println("GEFUNDEN " + gefunden);
+        logger.info("Lieferung "+ paketNr + "gesucht. Gefunden: " + ((gefunden == null)?"keine":gefunden));
 
         return gefunden;
     }
@@ -168,6 +171,7 @@ public class WarenWirtschaftService implements WarenWirtschaftServiceIF{
     public Lieferung loescheLieferung(Lieferung lieferung){
         lieferung = entityManager.find(Lieferung.class, lieferung.getId());
         entityManager.remove(lieferung);
+        logger.info("Lieferung gelöscht: "+ lieferung);
         return lieferung;
     }
 
@@ -178,18 +182,23 @@ public class WarenWirtschaftService implements WarenWirtschaftServiceIF{
 
     @Transactional
     private Lagergut createLagergut(Lagergut lagergut){
+        Lagergut tmpLag;
+        logger.info("Lagergut wird angefragt...");
         try{
             Query query = entityManager.createQuery(
                     "SELECT s FROM Lagergut AS s WHERE s.ware = :ware",Lagergut.class);
             query.setParameter("ware",lagergut.getWare());
-            return (Lagergut) query.getSingleResult();
+            tmpLag =(Lagergut) query.getSingleResult();
         }catch(NoResultException e) {
-            Lagergut tmpLag = new Lagergut();
+            tmpLag = new Lagergut();
             tmpLag.setWare(lagergut.getWare());
             tmpLag.setGewicht(lagergut.getGewicht());
+            logger.info("Neues Lagergut angelegt: "+tmpLag);
             entityManager.persist(tmpLag);
             return tmpLag;
         }
+        logger.info("Lagergut schon vorhanden: " + tmpLag);
+        return tmpLag;
     }
 
     public String longToEuro(long betrag){

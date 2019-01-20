@@ -1,5 +1,6 @@
 package de.othr.grn.ui.model;
 
+import de.othr.grn.entity.Adresse;
 import de.othr.grn.entity.LieferStatus;
 import de.othr.grn.entity.Lieferung;
 import de.othr.grn.service.ConstantService;
@@ -10,6 +11,9 @@ import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
 
 @Named
 @SessionScoped
@@ -22,7 +26,8 @@ public class PaketverfolgungModel implements Serializable {
     ConstantService constantService;
 
     private long paketNr;
-    private Lieferung queryErgebnis;
+    private Collection<Lieferung> queryErgebnis;
+    private Adresse adresse = new Adresse();
 
     public long getLieferNr() {
         return paketNr;
@@ -32,11 +37,18 @@ public class PaketverfolgungModel implements Serializable {
         this.paketNr = lieferNr;
     }
 
-    public void sucheLieferung(){
-        queryErgebnis = warenWirtschaftService.findeLieferung(paketNr);
+    public void sucheLieferungNachLink(){
+        if(paketNr != 0) {
+            queryErgebnis = new ArrayList<Lieferung>();
+            queryErgebnis.add(warenWirtschaftService.findeLieferung(paketNr));
+        }
     }
 
-    public Lieferung getQueryErgebnis() {
+    public void sucheLieferungNachAdresse(){
+        queryErgebnis = warenWirtschaftService.lieferungenAnzeigen(adresse);
+    }
+
+    public Collection<Lieferung> getQueryErgebnis() {
         return queryErgebnis;
     }
 
@@ -50,5 +62,31 @@ public class PaketverfolgungModel implements Serializable {
 
     public void empfangen(Lieferung lieferung){
         warenWirtschaftService.empfangen(lieferung);
+    }
+
+    public Adresse getAdresse() {
+        return adresse;
+    }
+
+    public void setAdresse(Adresse adresse) {
+        this.adresse = adresse;
+    }
+
+    public void reset(){
+        paketNr = 0;
+        queryErgebnis = null;
+        adresse = new Adresse();
+    }
+
+    public boolean isEmpty(Collection<Lieferung> lieferungen){
+        if (lieferungen == null)
+            return true;
+        return lieferungen.isEmpty();
+    }
+
+    public boolean noResult(Collection<Lieferung> lieferungen){
+        if (lieferungen == null)
+            return false;
+        return lieferungen.isEmpty();
     }
 }

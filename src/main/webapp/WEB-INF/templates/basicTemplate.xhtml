@@ -24,21 +24,21 @@
             </h:form>
         </ui:insert>
     </div>
-    <div>
-        <div id="left">
-            <ui:insert name="left">
-                LEFT
-            </ui:insert>
+        <div id="body">
+            <div id="left" class="content">
+                <ui:insert name="left">
+                </ui:insert>
+            </div>
+            <div id="content" class="content">
+                <ui:insert name="content">
+                    CONTENT
+                </ui:insert>
+            </div>
         </div>
-        <div id="content" class="left_content">
-            <ui:insert name="content">
-                CONTENT
-            </ui:insert>
-        </div>
-    </div>
     <div id="bottom">
         <ui:insert name="bottom">
-            Vorlesung Softwareentwicklung WS 2018/19
+            Vorlesung Softwareentwicklung WS 2018/19 von Nils Groth
+            <h:outputLink styleClass="rightAlign" value="#{request.contextPath}">zurück zur Startseite</h:outputLink>
         </ui:insert>
     </div>
 

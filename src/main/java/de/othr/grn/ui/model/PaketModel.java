@@ -42,6 +42,9 @@ public class PaketModel implements Serializable {
         Adresse adr = new Adresse(tmpAdresse.getStrasse(),tmpAdresse.getPlz(),tmpAdresse.getOrt());
         Paket neu = new Paket(tmpPaket.getInhalt(),adr,tmpPaket.getGewicht(),tmpPaket.getVersandart());
         tmpPaket = (Paket) warenWirtschaftService.aufgeben(neu, kontonr);
+        tmpAdresse = new Adresse();
+        tmpPaket = new Paket();
+        kontonr = 0;
         return "paketbestaetigt";
     }
 

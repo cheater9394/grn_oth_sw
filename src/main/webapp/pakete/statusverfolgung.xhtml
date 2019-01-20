@@ -6,63 +6,77 @@
 
 <ui:composition template="../WEB-INF/templates/basicTemplate.xhtml">
     <ui:define name="content">
-        <h1>Willkommen!</h1>
         <h2>Sie befinden sich auf (statusverwaltung.xhtml)</h2>
         <f:metadata>
             <f:viewParam name="lieferNr" value="#{paketverfolgungModel.lieferNr}"/>
-            <f:event type="preRenderView" listener="#{paketverfolgungModel.sucheLieferung()}"/>
+            <f:event type="preRenderView" listener="#{paketverfolgungModel.sucheLieferungNachLink()}"/>
         </f:metadata>
-        <h:dataTable var="lief" styleClass="LieferTable" value="#{paketverfolgungModel.queryErgebnis}" rendered="#{paketverfolgungModel.queryErgebnis != null}">
-            <h:column>
-                <f:facet name="header">
-                    <h:outputText value="ID"/>
-                </f:facet>
-                <h:outputLink value="#{request.contextPath}#{paketverfolgungModel.statusUrl}#{lief.id}">#{lief.id}</h:outputLink>
-            </h:column>
-            <h:column>
-                <h:outputText value="#{verwaltungModel.castToBestellung(lief).anzahl}x" rendered="#{verwaltungModel.isBestellung(lief)}"/>
-            </h:column>
-            <h:column>
-                <f:facet name="header">
-                    <h:outputText value="Inhalt"/>
-                </f:facet>
-                <h:outputText value="#{verwaltungModel.castToBestellung(lief).lagergut.ware}" rendered="#{verwaltungModel.isBestellung(lief)}"/>
-                <h:outputText value="#{verwaltungModel.castToPaket(lief).inhalt}" rendered="#{!verwaltungModel.isBestellung(lief)}"/>
-            </h:column>
-            <h:column>
-                <h:outputText value="(ID: #{verwaltungModel.castToBestellung(lief).lagergut.id})" rendered="#{verwaltungModel.isBestellung(lief)}"/>
-            </h:column>
-            <h:column>
-                <f:facet name="header">
-                    <h:outputText value="Gewicht"/>
-                </f:facet>
-                <h:outputText value="#{lief.gewicht}g"/>
-            </h:column>
-            <h:column>
-                <f:facet name="header">
-                    <h:outputText value="Adresse"/>
-                </f:facet>
-                <h:outputText value="#{lief.adresse.strasse}"/><br/>
-                <h:outputText value="#{lief.adresse.plz} #{lief.adresse.ort}"/>
-            </h:column>
-            <h:column>
-                <f:facet name="header">
-                    <h:outputText value="Versandart"/>
-                </f:facet>
-                <h:outputText value="#{lief.versandart}"/>
-            </h:column>
-            <h:column>
-                <f:facet name="header">
-                    <h:outputText value="Lieferstatus"/>
-                </f:facet>
-                <h:outputText value="#{lief.lieferStatus.toString()}"/>
-            </h:column>
-            <h:column>
-                <h:commandButton value="Empfangen" action="#{paketverfolgungModel.empfangen(lief)}" disabled="#{!paketverfolgungModel.empfangbar(lief)}"/>
-                <!--TODO: Empfang Button funktioniert nicht-->
-            </h:column>
-        </h:dataTable>
-        <!--TODO: Pakete nach Adresse suchen -->
+        <h:form>
+            <h:dataTable var="lief" styleClass="LieferTable" value="#{paketverfolgungModel.queryErgebnis}" rendered="#{!paketverfolgungModel.isEmpty(paketverfolgungModel.queryErgebnis)}">
+                <h:column>
+                    <f:facet name="header">
+                        <h:outputText value="ID"/>
+                    </f:facet>
+                    <h:outputLink value="#{request.contextPath}#{paketverfolgungModel.statusUrl}#{lief.id}">#{lief.id}</h:outputLink>
+                </h:column>
+                <h:column>
+                    <h:outputText value="#{verwaltungModel.castToBestellung(lief).anzahl}x" rendered="#{verwaltungModel.isBestellung(lief)}"/>
+                </h:column>
+                <h:column>
+                    <f:facet name="header">
+                        <h:outputText value="Inhalt"/>
+                    </f:facet>
+                    <h:outputText value="#{verwaltungModel.castToBestellung(lief).lagergut.ware}" rendered="#{verwaltungModel.isBestellung(lief)}"/>
+                    <h:outputText value="#{verwaltungModel.castToPaket(lief).inhalt}" rendered="#{!verwaltungModel.isBestellung(lief)}"/>
+                </h:column>
+                <h:column>
+                    <h:outputText value="(ID: #{verwaltungModel.castToBestellung(lief).lagergut.id})" rendered="#{verwaltungModel.isBestellung(lief)}"/>
+                </h:column>
+                <h:column>
+                    <f:facet name="header">
+                        <h:outputText value="Gewicht"/>
+                    </f:facet>
+                    <h:outputText value="#{lief.gewicht}g"/>
+                </h:column>
+                <h:column>
+                    <f:facet name="header">
+                        <h:outputText value="Adresse"/>
+                    </f:facet>
+                    <h:outputText value="#{lief.adresse.strasse}"/><br/>
+                    <h:outputText value="#{lief.adresse.plz} #{lief.adresse.ort}"/>
+                </h:column>
+                <h:column>
+                    <f:facet name="header">
+                        <h:outputText value="Versandart"/>
+                    </f:facet>
+                    <h:outputText value="#{lief.versandart}"/>
+                </h:column>
+                <h:column>
+                    <f:facet name="header">
+                        <h:outputText value="Lieferstatus"/>
+                    </f:facet>
+                    <h:outputText value="#{lief.lieferStatus.toString()}"/>
+                </h:column>
+                <h:column>
+                    <h:commandButton value="Empfangen" styleClass="tableButton" action="#{paketverfolgungModel.empfangen(lief)}" disabled="#{!paketverfolgungModel.empfangbar(lief)}"/>
+                    <!--TODO: Empfang Button funktioniert nicht-->
+                </h:column>
+            </h:dataTable>
+            <!--TODO: Pakete nach Adresse suchen -->
+            <h:panelGrid columns="2" rendered="#{paketverfolgungModel.queryErgebnis == null}">
+                <h:outputText value="Straße:"/>
+                <h:inputText value="#{paketverfolgungModel.adresse.strasse}"/>
+                <h:outputText value="PLZ:"/>
+                <h:inputText value="#{paketverfolgungModel.adresse.plz}"/>
+                <h:outputText value="Ort:"/>
+                <h:inputText value="#{paketverfolgungModel.adresse.ort}"/>
+            </h:panelGrid>
+            <h:commandButton value="Suchen" action="#{paketverfolgungModel.sucheLieferungNachAdresse()}" rendered="#{paketverfolgungModel.queryErgebnis == null}"/>
+            <h:panelGrid columns="1">
+                <h:outputText styleClass="Error" value="Ihre Suche lieferte leider kein Ergebnis." rendered="#{paketverfolgungModel.noResult(paketverfolgungModel.queryErgebnis)}"/>
+                <h:commandButton value="Neue Suche" action="#{paketverfolgungModel.reset()}" rendered="#{paketverfolgungModel.queryErgebnis != null}"/>
+            </h:panelGrid>
+        </h:form>
     </ui:define>
 </ui:composition>
 

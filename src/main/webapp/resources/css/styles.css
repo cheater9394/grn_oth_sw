@@ -54,4 +54,23 @@ table{
     background-color: lightgrey;
 }
 
+.Error{
+    color: red;
+    padding: 0.5em;
+    font-weight: bold;
+}
+
+input[type=submit]{
+    margin-top: 0.5em;
+    margin-right: 0.5em;
+}
+
+.LieferTable .tableButton{
+    margin: 0px;
+}
+
+.rightAlign{
+    float: right;
+}
+
 /*TODO: Webseiten Aussehen verbessern*/

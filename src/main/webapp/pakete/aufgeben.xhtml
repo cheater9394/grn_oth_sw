@@ -7,8 +7,7 @@
 
 <ui:composition template="../WEB-INF/templates/basicTemplate.xhtml">
     <ui:define name="content">
-        <h1>Willkommen!</h1>
-        <h2>Sie befinden sich auf (aufgeben.xhtml)</h2>
+        <h2>Paketaufgabe</h2>
         <h:form>
             <h:outputText value="Paket:"/>
             <h:panelGrid columns="2">
@@ -36,6 +35,9 @@
 
             <h:commandButton value="Weiter zur Bezahlung" action="#{paketModel.gotoBezahlung()}"/>
         </h:form>
+    </ui:define>
+    <ui:define name="left">
+        Geben Sie hier bitte die Daten zu ihrem aufzugebenden Paket ein. Danach werden Ihnen die Versandkosten angezeigt und entsprechende Zahlungsinformationen erfordert.
     </ui:define>
 </ui:composition>
 
