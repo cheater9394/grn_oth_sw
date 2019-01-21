@@ -4,17 +4,14 @@ import de.othr.grn.entity.Adresse;
 import de.othr.grn.entity.Bestellung;
 import de.othr.grn.entity.Lieferung;
 
+import java.io.Serializable;
 import java.util.List;
 
-public interface WarenWirtschaftServiceIF {
+public interface WarenWirtschaftServiceIF extends Serializable {
 
-    Lieferung aufgeben(Lieferung neu, long kontoNr);
-    Lieferung empfangen(Lieferung versandt);
-    void klebebandBestellen();
-    List<Lieferung> lieferungenAnzeigen(Adresse adresse);
     /**
      * @param kontoNr Kontonummer des Versandbezahlers
      */
-    Lieferung bestellungAufgeben(Bestellung neu, long kontoNr);
+    String bestellungAufgeben(Bestellung neu, long kontoNr) throws TransactionException;
 
 }

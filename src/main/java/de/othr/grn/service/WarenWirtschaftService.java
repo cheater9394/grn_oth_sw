@@ -34,9 +34,8 @@ public class WarenWirtschaftService implements WarenWirtschaftServiceIF{
 
     Logger logger = LoggerFactory.getLogger(WarenWirtschaftService.class);
 
-    @Override
     @Transactional
-    public Lieferung aufgeben(Lieferung neu,long kontoNr){
+    public Lieferung aufgeben(Lieferung neu,long kontoNr) throws TransactionException{
         logger.info("Lieferung wird aufgeben: " + neu.toString());
 
         Lieferung tmpLief;
@@ -75,20 +74,9 @@ public class WarenWirtschaftService implements WarenWirtschaftServiceIF{
         }
 
         tmpLief.setLieferStatus(LieferStatus.s1);
+        transaction(tmpLief, kontoNr);
+        tmpLief.setLieferStatus(LieferStatus.s5);
         entityManager.persist(tmpLief);
-
-        logger.info("Versandüberweißung eingeleitet");
-        TransaktionsServiceService transaktionsServiceService = new TransaktionsServiceService();
-        TransaktionsService stub = transaktionsServiceService.getTransaktionsServicePort();
-
-        Transaktion transaktion = new Transaktion();
-        transaktion.setVon(kontoNr);
-        transaktion.setZu(constantService.getKontonr());
-        transaktion.setBetrag(tmpLief.versandBerechnen());
-        transaktion.setVerwendungszweck("Versandkosten von PaketNr: " + tmpLief.getLieferNr());
-        logger.info("Versandkosten Ueberweisung über: "+ transaktion.getBetrag() +" wird abgeschickt");
-        transaktion = stub.transaktionTaetigen(transaktion);
-        logger.info("Transaktion " + (transaktion.isAbgeschlossen()?"erfolgreich":"gescheitert"));
 
         Query query = entityManager.createQuery(
                 "SELECT s FROM Eigenlager AS s WHERE s.ware = :ware",Eigenlager.class);
@@ -109,21 +97,53 @@ public class WarenWirtschaftService implements WarenWirtschaftServiceIF{
     @Override
     @Transactional
     @WebMethod
-    public Lieferung bestellungAufgeben(@WebParam(name = "Bestellung") Bestellung neu,@WebParam(name = "Kontonummer") long kontoNr){
+    public String bestellungAufgeben(@WebParam(name = "Bestellung") Bestellung neu,@WebParam(name = "Kontonummer") long kontoNr) throws TransactionException{
         logger.info("Bestellung empfangen, Auftrag wird aufgegeben");
-        return aufgeben(neu,kontoNr);
+        Lieferung lieferung = aufgeben(neu,kontoNr);
+        String returnString = constantService.getDomain() + constantService.getStatusUrl() + lieferung.getLieferNr();
+        logger.info("Bestellung erfolgreich; PaketverfolgungsURL: " + returnString);
+        return returnString;
     }
 
-    @Override
+    private void transaction(Lieferung lieferung, long kontoNr) throws TransactionException{
+        logger.info("Versandüberweißung eingeleitet");
+
+        if(kontoNr == constantService.getKontonr()){
+            logger.info("Eigene Kontonummer angegeben; Versand wird übersprungen");
+            return;
+        }
+
+        TransaktionsServiceService transaktionsServiceService = new TransaktionsServiceService();
+        TransaktionsService stub = transaktionsServiceService.getTransaktionsServicePort();
+
+        Transaktion transaktion = new Transaktion();
+        transaktion.setVon(kontoNr);
+        transaktion.setZu(constantService.getKontonr());
+        transaktion.setBetrag(lieferung.versandBerechnen());
+        transaktion.setVerwendungszweck("Versandkosten von Bestellung: " + lieferung.toString());
+        logger.info("Versandkosten Ueberweisung über: "+ transaktion.getBetrag() +" wird abgeschickt");
+
+        try{
+            transaktion = stub.transaktionTaetigen(transaktion);
+        }catch (Exception e){
+            throw new TransactionException("Fehler bei der Verbindung zu Vilsmeier-Bank: " + e.getMessage());
+        }
+
+        logger.info("Transaktion " + (transaktion.isAbgeschlossen()?"erfolgreich":"gescheitert"));
+
+        if(!transaktion.isAbgeschlossen()){
+            throw new TransactionException("Transaktionsdaten fehlerhaft. Transaktion nicht erfolgreich. Bitte überprüfen Sie ihre Daten");
+        }
+    }
+
     @Transactional
     public Lieferung empfangen(Lieferung versandt){
         Lieferung temp = entityManager.find(Lieferung.class, versandt.getLieferNr());
         temp.setLieferStatus(LieferStatus.s6);
-        entityManager.merge(temp);
+        temp = entityManager.merge(temp);
         return temp;
     }
 
-    @Override
     @Transactional
     public void klebebandBestellen() {
         //TODO: Schnittstelle von BBestellungen importieren
@@ -142,9 +162,7 @@ public class WarenWirtschaftService implements WarenWirtschaftServiceIF{
         }
     }
 
-    @Override
     @Transactional
-    //TODO: löschen
     public List<Lieferung> lieferungenAnzeigen(Adresse adresse) {
         TypedQuery<Lieferung> query = entityManager.createQuery(
                 "SELECT s FROM Lieferung AS s WHERE s.adresse = :adresse",

@@ -13,14 +13,14 @@ import javax.xml.bind.annotation.XmlType;
  * <p>Das folgende Schemafragment gibt den erwarteten Content an, der in dieser Klasse enthalten ist.
  * 
  * <pre>
- * &lt;complexType name="generatedIdEntity">
- *   &lt;complexContent>
- *     &lt;extension base="{http://service.vilsmeier/}singleIdEntity">
- *       &lt;sequence>
- *       &lt;/sequence>
- *     &lt;/extension>
- *   &lt;/complexContent>
- * &lt;/complexType>
+ * &lt;complexType name="generatedIdEntity"&gt;
+ *   &lt;complexContent&gt;
+ *     &lt;extension base="{http://service.vilsmeier/}singleIdEntity"&gt;
+ *       &lt;sequence&gt;
+ *       &lt;/sequence&gt;
+ *     &lt;/extension&gt;
+ *   &lt;/complexContent&gt;
+ * &lt;/complexType&gt;
  * </pre>
  * 
  * 

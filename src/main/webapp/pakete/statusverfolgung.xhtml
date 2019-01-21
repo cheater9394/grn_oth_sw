@@ -59,10 +59,8 @@
                 </h:column>
                 <h:column>
                     <h:commandButton value="Empfangen" styleClass="tableButton" action="#{paketverfolgungModel.empfangen(lief)}" disabled="#{!paketverfolgungModel.empfangbar(lief)}"/>
-                    <!--TODO: Empfang Button funktioniert nicht-->
                 </h:column>
             </h:dataTable>
-            <!--TODO: Pakete nach Adresse suchen -->
             <h:panelGrid columns="2" rendered="#{paketverfolgungModel.queryErgebnis == null}">
                 <h:outputText value="Straße:"/>
                 <h:inputText value="#{paketverfolgungModel.adresse.strasse}"/>
@@ -77,6 +75,9 @@
                 <h:commandButton value="Neue Suche" action="#{paketverfolgungModel.reset()}" rendered="#{paketverfolgungModel.queryErgebnis != null}"/>
             </h:panelGrid>
         </h:form>
+    </ui:define>
+    <ui:define name="left">
+        <p>Hier können Sie nach Lieferungen per Adresseingabe suchen. Sollten Sie über einen Paketverfolgungslink hier gelandet sein, können Sie hier die Informationen des entsprechenden Paketes einsehen</p>
     </ui:define>
 </ui:composition>
 

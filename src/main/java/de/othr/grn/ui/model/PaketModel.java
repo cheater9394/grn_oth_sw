@@ -3,6 +3,7 @@ package de.othr.grn.ui.model;
 import de.othr.grn.entity.Adresse;
 import de.othr.grn.entity.Paket;
 import de.othr.grn.entity.Versandart;
+import de.othr.grn.service.TransactionException;
 import de.othr.grn.service.VersandartService;
 import de.othr.grn.service.WarenWirtschaftService;
 import de.othr.grn.ui.converter.VersandartConverter;
@@ -23,6 +24,7 @@ public class PaketModel implements Serializable {
     private Paket tmpPaket = new Paket();
     private long kontonr;
     private long versandkosten;
+    private String message;
 
     @Inject
     private VersandartService versandartService;
@@ -35,17 +37,21 @@ public class PaketModel implements Serializable {
 
     public String gotoBezahlung(){
         versandkosten = tmpPaket.versandBerechnen();
+        message = null;
         return "bezahlung";
     }
 
     public String paketBestaetigen(){
         Adresse adr = new Adresse(tmpAdresse.getStrasse(),tmpAdresse.getPlz(),tmpAdresse.getOrt());
         Paket neu = new Paket(tmpPaket.getInhalt(),adr,tmpPaket.getGewicht(),tmpPaket.getVersandart());
-        tmpPaket = (Paket) warenWirtschaftService.aufgeben(neu, kontonr);
-        tmpAdresse = new Adresse();
-        tmpPaket = new Paket();
-        kontonr = 0;
-        return "paketbestaetigt";
+        try{
+            tmpPaket = (Paket) warenWirtschaftService.aufgeben(neu, kontonr);
+            return "paketbestaetigt";
+        }
+        catch (TransactionException e){
+            message = e.getMessage();
+        }
+        return "bezahlung";
     }
 
     public Paket getTmpPaket() {
@@ -114,7 +120,18 @@ public class PaketModel implements Serializable {
         this.versandartConverter = versandartConverter;
     }
 
+    public String reset(){
+        tmpAdresse = new Adresse();
+        tmpPaket = new Paket();
+        kontonr = 0;
+        return "paketaufgeben";
+    }
+
     public String getVersandkostenAsEuro(){
         return warenWirtschaftService.longToEuro(versandkosten);
+    }
+
+    public String getMessage() {
+        return message;
     }
 }

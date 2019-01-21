@@ -14,23 +14,24 @@ import javax.xml.datatype.XMLGregorianCalendar;
  * <p>Das folgende Schemafragment gibt den erwarteten Content an, der in dieser Klasse enthalten ist.
  * 
  * <pre>
- * &lt;complexType name="transaktion">
- *   &lt;complexContent>
- *     &lt;extension base="{http://service.vilsmeier/}generatedIdEntity">
- *       &lt;sequence>
- *         &lt;element name="abgeschlossen" type="{http://www.w3.org/2001/XMLSchema}boolean"/>
- *         &lt;element name="bankVon" type="{http://www.w3.org/2001/XMLSchema}long"/>
- *         &lt;element name="bankZu" type="{http://www.w3.org/2001/XMLSchema}long"/>
- *         &lt;element name="betrag" type="{http://www.w3.org/2001/XMLSchema}long"/>
- *         &lt;element name="datum" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0"/>
- *         &lt;element name="typ" type="{http://service.vilsmeier/}transaktionstyp" minOccurs="0"/>
- *         &lt;element name="verwendungszweck" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
- *         &lt;element name="von" type="{http://www.w3.org/2001/XMLSchema}long"/>
- *         &lt;element name="zu" type="{http://www.w3.org/2001/XMLSchema}long"/>
- *       &lt;/sequence>
- *     &lt;/extension>
- *   &lt;/complexContent>
- * &lt;/complexType>
+ * &lt;complexType name="transaktion"&gt;
+ *   &lt;complexContent&gt;
+ *     &lt;extension base="{http://service.vilsmeier/}generatedIdEntity"&gt;
+ *       &lt;sequence&gt;
+ *         &lt;element name="abgeschlossen" type="{http://www.w3.org/2001/XMLSchema}boolean"/&gt;
+ *         &lt;element name="bankVon" type="{http://www.w3.org/2001/XMLSchema}long"/&gt;
+ *         &lt;element name="bankZu" type="{http://www.w3.org/2001/XMLSchema}long"/&gt;
+ *         &lt;element name="betrag" type="{http://www.w3.org/2001/XMLSchema}long"/&gt;
+ *         &lt;element name="datum" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0"/&gt;
+ *         &lt;element name="datumString" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
+ *         &lt;element name="typ" type="{http://service.vilsmeier/}transaktionstyp" minOccurs="0"/&gt;
+ *         &lt;element name="verwendungszweck" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
+ *         &lt;element name="von" type="{http://www.w3.org/2001/XMLSchema}long"/&gt;
+ *         &lt;element name="zu" type="{http://www.w3.org/2001/XMLSchema}long"/&gt;
+ *       &lt;/sequence&gt;
+ *     &lt;/extension&gt;
+ *   &lt;/complexContent&gt;
+ * &lt;/complexType&gt;
  * </pre>
  * 
  * 
@@ -42,6 +43,7 @@ import javax.xml.datatype.XMLGregorianCalendar;
     "bankZu",
     "betrag",
     "datum",
+    "datumString",
     "typ",
     "verwendungszweck",
     "von",
@@ -57,6 +59,7 @@ public class Transaktion
     protected long betrag;
     @XmlSchemaType(name = "dateTime")
     protected XMLGregorianCalendar datum;
+    protected String datumString;
     protected Transaktionstyp typ;
     protected String verwendungszweck;
     protected long von;
@@ -148,6 +151,30 @@ public class Transaktion
      */
     public void setDatum(XMLGregorianCalendar value) {
         this.datum = value;
+    }
+
+    /**
+     * Ruft den Wert der datumString-Eigenschaft ab.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getDatumString() {
+        return datumString;
+    }
+
+    /**
+     * Legt den Wert der datumString-Eigenschaft fest.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setDatumString(String value) {
+        this.datumString = value;
     }
 
     /**

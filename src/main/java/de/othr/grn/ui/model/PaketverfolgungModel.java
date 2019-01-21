@@ -72,10 +72,11 @@ public class PaketverfolgungModel implements Serializable {
         this.adresse = adresse;
     }
 
-    public void reset(){
+    public String reset(){
         paketNr = 0;
         queryErgebnis = null;
         adresse = new Adresse();
+        return "paketstatus";
     }
 
     public boolean isEmpty(Collection<Lieferung> lieferungen){

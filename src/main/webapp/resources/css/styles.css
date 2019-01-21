@@ -3,8 +3,11 @@ body {
     font-size: 12px;
     font-family: Verdana, "Verdana CE",  Arial, "Arial CE", "Lucida Grande CE", lucida, "Helvetica CE", sans-serif;
     color: #000000;
-    margin: 10px;
+    margin-left: auto;
+    margin-right: auto;
+    width: 900px;
 }
+
 
 h1 {
     font-family: Arial, "Arial CE", "Lucida Grande CE", lucida, "Helvetica CE", sans-serif;
@@ -18,6 +21,7 @@ h1 {
 
 h2 {
     color: #036fab;
+    margin: 0px 0px 0.5em;
 }
 
 h3 {
@@ -71,6 +75,11 @@ input[type=submit]{
 
 .rightAlign{
     float: right;
+}
+
+.information{
+    display: inline;
+    width: 30px;
 }
 
 /*TODO: Webseiten Aussehen verbessern*/

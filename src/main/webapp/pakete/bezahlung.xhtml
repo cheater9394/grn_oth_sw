@@ -27,6 +27,7 @@
                 <h:outputText value="#{paketModel.tmpAdresse.ort}"/>
             </h:panelGrid>
                 <h2><h:outputText value="Versandkosten: #{paketModel.versandkostenAsEuro}"/></h2>
+            <h:outputText value="#{paketModel.message}" styleClass="Error" rendered="#{paketModel.message != null}"/>
             <h:panelGrid columns="2">
                 <h:outputText value="Bitte geben Sie ihre VilsmeierBank-Kontonummer an:"/>
                 <h:inputText value="#{paketModel.kontonr}"/>
@@ -36,7 +37,7 @@
         </h:form>
     </ui:define>
     <ui:define name="left">
-        Sie befinden sich nun auf der Bezahlungsseite des Paketaufgabeservices. Bitte geben Sie hier eine gültige und zahlungsfähige Kontonummer der Vilsmeier-Bank an. Sie können auch mit "Zurück" ihre Paketinformationen überarbeiten.
+        <p>Sie befinden sich nun auf der Bezahlungsseite des Paketaufgabeservices. Bitte geben Sie hier eine gültige und zahlungsfähige Kontonummer der Vilsmeier-Bank an. Sie können auch mit "Zurück" ihre Paketinformationen überarbeiten.</p>
     </ui:define>
 </ui:composition>
 

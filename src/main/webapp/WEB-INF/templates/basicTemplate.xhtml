@@ -18,29 +18,33 @@
         <ui:insert name="top">
             <h:form>
                 <h:commandLink value="Home" action="startseite"/>&nbsp;&nbsp;&nbsp;&nbsp;
-                <h:commandLink value="Paket aufgeben" action="paketaufgeben"/>&nbsp;&nbsp;&nbsp;&nbsp;
-                <h:commandLink value="Paketverfolgung" action="paketstatus"/>&nbsp;&nbsp;&nbsp;&nbsp;
+                <h:commandLink value="Paket aufgeben" action="#{paketModel.reset()}"/>&nbsp;&nbsp;&nbsp;&nbsp;
+                <h:commandLink value="Paketverfolgung" action="#{paketverfolgungModel.reset()}"/>&nbsp;&nbsp;&nbsp;&nbsp;
                 <h:commandLink value="Verwaltung" action="verwaltung"/>&nbsp;&nbsp;&nbsp;&nbsp;
             </h:form>
         </ui:insert>
     </div>
         <div id="body">
             <div id="left" class="content">
-                <ui:insert name="left">
-                </ui:insert>
+                <div class="container">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Messagebox_info.svg" alt="i" class="information"/><br/>
+                    <ui:insert name="left">
+                    </ui:insert>
+                </div>
             </div>
             <div id="content" class="content">
-                <ui:insert name="content">
-                    CONTENT
+                <div class="container">
+                    <ui:insert name="content">
+                        CONTENT
+                    </ui:insert>
+                </div>
+            </div>
+            <div id="bottom">
+                <ui:insert name="bottom">
+                    Vorlesung Softwareentwicklung WS 2018/19 von Nils Groth
+                    <h:outputLink styleClass="rightAlign" value="#{request.contextPath}">zurück zur Startseite</h:outputLink>
                 </ui:insert>
             </div>
         </div>
-    <div id="bottom">
-        <ui:insert name="bottom">
-            Vorlesung Softwareentwicklung WS 2018/19 von Nils Groth
-            <h:outputLink styleClass="rightAlign" value="#{request.contextPath}">zurück zur Startseite</h:outputLink>
-        </ui:insert>
-    </div>
-
 </h:body>
 </html>

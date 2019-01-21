@@ -32,7 +32,12 @@
                 <h:outputText value="VilsmeierBank-Kontonummer:"/>
                 <h:outputText value="#{paketModel.kontonr}"/>
             </h:panelGrid>
+            <h:outputText value="Sie können den Status ihres Pakets über diesen Link verfolgen: "/>
+            <h:outputLink value="#{request.contextPath}#{paketverfolgungModel.statusUrl}#{paketModel.tmpPaket.id}">Paketverfolgung</h:outputLink>
         </h:form>
+    </ui:define>
+    <ui:define name="left">
+        <p>Ihre Bestellung wurde erfolgreich aufgegeben. Sie können hier noch einmal alle eingegebenen Daten einsehen.</p>
     </ui:define>
 </ui:composition>
 
